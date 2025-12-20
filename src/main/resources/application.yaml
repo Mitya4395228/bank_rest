@@ -1,3 +1,32 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
 spring:
   application:
     name: bankcards
+  datasource:
+    url: jdbc:postgresql://postgres:5432/bankcards_service_db
+    driver-class-name: org.postgresql.Driver
+    username: bankcards_service
+    password: 123456
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: "classpath:db/migration/db.changelog-master.xml"
+update.expired-cards.job.cron: "0 5 0 * * ?"
+application:
+  security:
+    jwt:
+      secret-key: B36F566859703373367639792F423F452848284D6251655468576D5A71349437
+      expiration: 86400000
+    string:
+      encryptor:
+        secret-key: 9390123456789012
+        algorithm: AES
