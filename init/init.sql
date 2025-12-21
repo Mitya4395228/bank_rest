@@ -1,0 +1,2 @@
+CREATE USER bankcards_service WITH ENCRYPTED PASSWORD '123456';
+CREATE DATABASE bankcards_service_db WITH OWNER bankcards_service ENCODING 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' TEMPLATE template0;
