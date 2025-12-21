@@ -15,4 +15,8 @@ public class AuthenticationResolver {
         return (UserInfoDetails) getAuthentication().getPrincipal();
     }
 
+    public boolean userHasRole(String role) {
+        return getUser().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
+    }
+
 }

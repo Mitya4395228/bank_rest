@@ -14,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.enums.CardStatus;
 
-
-public interface CardRepository extends JpaRepository<CardEntity, UUID> {
+public interface CardRepository extends JpaRepository<CardEntity, UUID>, CardRepositoryCustom {
 
     boolean existsByNumber(String number);
 

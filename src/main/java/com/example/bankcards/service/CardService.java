@@ -5,19 +5,24 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.example.bankcards.dto.card.CardCreateDTO;
+import com.example.bankcards.dto.card.CardFilter;
 import com.example.bankcards.dto.card.CardReadDTO;
 import com.example.bankcards.dto.card.CardTransfer;
 import com.example.bankcards.dto.card.CardUpdateStatusDTO;
 import com.example.bankcards.entity.CardEntity;
 import com.example.bankcards.entity.enums.CardStatus;
+import com.example.bankcards.entity.enums.RoleType;
 import com.example.bankcards.exception.EntityNotFoundException;
 import com.example.bankcards.exception.InsufficientBalanceException;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
+import com.example.bankcards.security.AuthenticationResolver;
 import com.example.bankcards.security.UserRightValidator;
 import com.example.bankcards.util.CardNumberUtil;
 
@@ -41,6 +46,9 @@ public class CardService {
     @Autowired
     UserRightValidator userRightValidator;
 
+    @Autowired
+    AuthenticationResolver authenticationResolver;
+
     public CardEntity getEntityById(UUID id) {
         var card = repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Card not found with id=%s".formatted(id)));
@@ -52,6 +60,14 @@ public class CardService {
 
     public CardReadDTO getById(UUID id) {
         return mapper.cardEntityToReadDTO(getEntityById(id));
+    }
+
+    @Transactional
+    public PagedModel<CardReadDTO> getAllByFilter(CardFilter filter, Pageable pageable) {
+        if(!authenticationResolver.userHasRole("ROLE_" + RoleType.ADMIN)) {
+            filter = new CardFilter(filter, authenticationResolver.getUser().getId());
+        }
+        return repository.findAllByFilter(filter, pageable);
     }
 
     public List<CardReadDTO> getAllByUserId(UUID userId) {

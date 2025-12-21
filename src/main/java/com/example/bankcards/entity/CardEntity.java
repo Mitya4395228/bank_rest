@@ -29,7 +29,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "cards", schema = "finance")
-public class CardEntity {
+public class CardEntity extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
