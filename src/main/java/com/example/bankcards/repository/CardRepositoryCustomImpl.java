@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -80,7 +79,7 @@ public class CardRepositoryCustomImpl implements CardRepositoryCustom {
 
         var totalElements = count(countString + qlString.toString(), parameters);
 
-        if (pageable.getSort() != null) {
+        if (pageable.getSort() != null && !pageable.getSort().isEmpty()) {
             qlString.append(" ORDER BY " + pageable.getSort().stream()
                     .map(order -> order.getProperty().equals("userId") ? "c.user.id %s".formatted(order.getDirection())
                             : "c.%s %s".formatted(order.getProperty(), order.getDirection()))
@@ -92,7 +91,7 @@ public class CardRepositoryCustomImpl implements CardRepositoryCustom {
 
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize()).setMaxResults(pageable.getPageSize());
 
-        var content = query.getResultStream().map(mapper::cardEntityToReadDTO).toList();
+        var content = query.getResultList().stream().map(mapper::cardEntityToReadDTO).toList();
         
        return new PagedModel<CardReadDTO>(new PageImpl<CardReadDTO>(content, pageable, totalElements));
     }

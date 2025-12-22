@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.bankcards.dto.card.CardCreateDTO;
 import com.example.bankcards.dto.card.CardFilter;
@@ -26,7 +27,6 @@ import com.example.bankcards.security.AuthenticationResolver;
 import com.example.bankcards.security.UserRightValidator;
 import com.example.bankcards.util.CardNumberUtil;
 
-import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
@@ -62,9 +62,8 @@ public class CardService {
         return mapper.cardEntityToReadDTO(getEntityById(id));
     }
 
-    @Transactional
     public PagedModel<CardReadDTO> getAllByFilter(CardFilter filter, Pageable pageable) {
-        if(!authenticationResolver.userHasRole("ROLE_" + RoleType.ADMIN)) {
+        if(!authenticationResolver.userHasRole(RoleType.ADMIN)) {
             filter = new CardFilter(filter, authenticationResolver.getUser().getId());
         }
         return repository.findAllByFilter(filter, pageable);
@@ -91,7 +90,7 @@ public class CardService {
         return updateStatus(id, new CardUpdateStatusDTO(CardStatus.BLOCKED));
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public List<CardReadDTO> transfer(CardTransfer transfer) {
 
         var fromCard = getEntityById(transfer.fromCard());

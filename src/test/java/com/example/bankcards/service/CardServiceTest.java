@@ -117,8 +117,10 @@ class CardServiceTest {
         when(authenticationResolver.getUser()).thenReturn(new UserInfoDetails(expected.getUser()));
         CardReadDTO actual = cardService.getById(expected.getId());
 
-        Assertions.assertThat(expected).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(actual);
+        Assertions.assertThat(expected)
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("user", "number")
+                .isEqualTo(actual);
         assertEquals(expected.getUser().getId(), actual.userId());
         assertTrue(expected.getNumber().endsWith(actual.number().replaceAll("[*]{4} ", "")));
     }
@@ -133,7 +135,7 @@ class CardServiceTest {
         CardEntity card = createCard(user, CardStatus.ACTIVE);
         CardEntity cardNotFoundWithFullFilter = createCard(admin, CardStatus.BLOCKED);
 
-        var role = "ROLE_" + RoleType.ADMIN;
+        var role = RoleType.ADMIN;
         when(authenticationResolver.userHasRole(role)).thenReturn(true);
 
         // full filter
@@ -150,8 +152,10 @@ class CardServiceTest {
         assertTrue(pageResult.getMetadata().totalPages() == 1);
         assertTrue(pageResult.getMetadata().totalElements() == 1);
         assertTrue(pageResult.getContent().size() == 1);
-        Assertions.assertThat(List.of(card)).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(pageResult.getContent());
+        Assertions.assertThat(List.of(card))
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("user", "number")
+                .isEqualTo(pageResult.getContent());
         assertEquals(pageResult.getContent().get(0).userId(), user.getId());
         assertNotEquals(cardNotFoundWithFullFilter.getId(), pageResult.getContent().get(0).id());
 
@@ -167,10 +171,12 @@ class CardServiceTest {
         assertTrue(pageResult.getContent().size() == 2);
         Assertions.assertThat(List.of(card, cardNotFoundWithFullFilter))
                 .usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(pageResult.getContent());
-        assertEquals(pageResult.getContent().get(0).userId(), user.getId());
+                .ignoringCollectionOrder()
+                .ignoringFields("user", "number")
+                .isEqualTo(pageResult.getContent());
         Assertions.assertThat(List.of(card.getUser().getId(), cardNotFoundWithFullFilter.getUser().getId()))
                 .usingRecursiveComparison()
+                .ignoringCollectionOrder()
                 .isEqualTo(pageResult.getContent().stream().map(CardReadDTO::userId).toList());
 
         verify(authenticationResolver, times(2)).userHasRole(role);
@@ -185,7 +191,7 @@ class CardServiceTest {
         UserEntity user = createUser();
         CardEntity card = createCard(user, CardStatus.ACTIVE);
 
-        var role = "ROLE_" + RoleType.ADMIN;
+        var role = RoleType.ADMIN;
         when(authenticationResolver.getUser()).thenReturn(new UserInfoDetails(user));
         when(authenticationResolver.userHasRole(role)).thenReturn(false);
 
@@ -203,8 +209,10 @@ class CardServiceTest {
         assertTrue(pageResult.getMetadata().totalElements() == 1);
         assertTrue(pageResult.getContent().size() == 1);
         assertEquals(pageResult.getContent().get(0).userId(), user.getId());
-        Assertions.assertThat(List.of(card)).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(pageResult.getContent());
+        Assertions.assertThat(List.of(card))
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("user", "number")
+                .isEqualTo(pageResult.getContent());
         assertNotEquals(cardNotFound.getId(), pageResult.getContent().get(0).id());
 
         verify(authenticationResolver, times(1)).userHasRole(role);
@@ -227,10 +235,16 @@ class CardServiceTest {
         List<CardReadDTO> result = cardService.getAllByUserId(user.getId());
 
         assertTrue(result.size() == 2);
-        Assertions.assertThat(List.of(card1, card2)).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(result);
-        Assertions.assertThat(List.of(user.getId(), user.getId())).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number").isEqualTo(result.stream().map(CardReadDTO::userId).toList());
+        Assertions.assertThat(List.of(card1, card2))
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringCollectionOrder()
+                .ignoringFields("user", "number")
+                .isEqualTo(result);
+        Assertions.assertThat(List.of(user.getId(), user.getId()))
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringCollectionOrder()
+                .ignoringFields("user", "number")
+                .isEqualTo(result.stream().map(CardReadDTO::userId).toList());
         assertNotEquals(cardNotFound.getId(), result.get(0).id());
     }
 
@@ -249,16 +263,23 @@ class CardServiceTest {
     @Test
     void testUpdateStatus() {
 
-        UserEntity admin = createUser(RoleType.ADMIN);
+        var role = RoleType.ADMIN;
+        UserEntity admin = createUser(role);
         when(authenticationResolver.getUser()).thenReturn(new UserInfoDetails(admin));
+        when(authenticationResolver.userHasRole(role)).thenReturn(true);
 
         CardEntity card = createCard(createUser(), CardStatus.ACTIVE);
 
         CardReadDTO result = cardService.updateStatus(card.getId(), new CardUpdateStatusDTO(CardStatus.BLOCKED));
-        Assertions.assertThat(card).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number", "status").isEqualTo(result);
+        Assertions.assertThat(card)
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("user", "number", "status")
+                .isEqualTo(result);
         assertNotEquals(card.getStatus(), result.status());
         assertEquals(CardStatus.BLOCKED, result.status());
+
+        verify(authenticationResolver, never()).getUser();
+        verify(authenticationResolver, times(1)).userHasRole(role);
     }
 
     @Test
@@ -269,8 +290,10 @@ class CardServiceTest {
         when(authenticationResolver.getUser()).thenReturn(new UserInfoDetails(user));
 
         CardReadDTO result = cardService.blockRequest(card.getId());
-        Assertions.assertThat(card).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number", "status").isEqualTo(result);
+        Assertions.assertThat(card)
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringFields("user", "number", "status")
+                .isEqualTo(result);
         assertNotEquals(card.getStatus(), result.status());
         assertEquals(CardStatus.BLOCKED, result.status());
     }
@@ -286,8 +309,11 @@ class CardServiceTest {
         CardTransfer transfer = new CardTransfer(cardFrom.getId(), cardTo.getId(), 1L);
 
         List<CardReadDTO> result = cardService.transfer(transfer);
-        Assertions.assertThat(List.of(cardFrom, cardTo)).usingRecursiveComparison(configRecursiveComparison())
-                .ignoringFields("user", "number", "balance").isEqualTo(result);
+        Assertions.assertThat(List.of(cardFrom, cardTo))
+                .usingRecursiveComparison(configRecursiveComparison())
+                .ignoringCollectionOrder()
+                .ignoringFields("user", "number", "balance")
+                .isEqualTo(result);
         result.forEach(card -> {
             if (card.id().equals(cardFrom.getId())) {
                 assertTrue(cardFrom.getBalance() - card.balance() == 1L);

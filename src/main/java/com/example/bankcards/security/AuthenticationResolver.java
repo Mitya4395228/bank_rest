@@ -4,6 +4,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.example.bankcards.entity.enums.RoleType;
+
 @Component
 public class AuthenticationResolver {
 
@@ -15,8 +17,8 @@ public class AuthenticationResolver {
         return (UserInfoDetails) getAuthentication().getPrincipal();
     }
 
-    public boolean userHasRole(String role) {
-        return getUser().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals(role));
+    public boolean userHasRole(RoleType role) {
+        return getUser().getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_" + role.name()));
     }
 
 }
