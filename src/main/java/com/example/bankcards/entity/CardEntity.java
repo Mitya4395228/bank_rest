@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import com.example.bankcards.entity.enums.CardStatus;
-import com.example.bankcards.util.CardNumberUtil;
 import com.example.bankcards.util.StringEncryptor;
+import com.example.bankcards.util.CardNumberUtil;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Convert;

@@ -5,25 +5,25 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.example.bankcards.config.StringEncryptorProperties;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Convert;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Convert
 public class StringEncryptor implements AttributeConverter<String, String> {
 
-    @Value("${application.security.string.encryptor.algorithm}")
-    String algorithm;
+    StringEncryptorProperties properties;
 
-    @Value("${application.security.string.encryptor.secret-key}")
-    String secretKey;
+    public StringEncryptor(StringEncryptorProperties properties) {
+        this.properties = properties;
+    }
 
     private SecretKeySpec getKey() {
-        return new SecretKeySpec(secretKey.getBytes(), algorithm);
+        return new SecretKeySpec(properties.secretKey().getBytes(), properties.algorithm());
     }
 
     @Override
@@ -32,7 +32,7 @@ public class StringEncryptor implements AttributeConverter<String, String> {
             if (attribute == null)
                 return null;
 
-            Cipher cipher = Cipher.getInstance(algorithm);
+            Cipher cipher = Cipher.getInstance(properties.algorithm());
             cipher.init(Cipher.ENCRYPT_MODE, getKey());
             byte[] encrypted = cipher.doFinal(attribute.getBytes());
             return Base64.getEncoder().encodeToString(encrypted);
@@ -48,7 +48,7 @@ public class StringEncryptor implements AttributeConverter<String, String> {
             if (dbData == null)
                 return null;
 
-            Cipher cipher = Cipher.getInstance(algorithm);
+            Cipher cipher = Cipher.getInstance(properties.algorithm());
             cipher.init(Cipher.DECRYPT_MODE, getKey());
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(dbData));
             return new String(decrypted);

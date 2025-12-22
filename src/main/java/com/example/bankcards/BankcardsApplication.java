@@ -2,7 +2,12 @@ package com.example.bankcards;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import com.example.bankcards.config.JwtProperties;
+import com.example.bankcards.config.StringEncryptorProperties;
+
+@EnableConfigurationProperties({JwtProperties.class, StringEncryptorProperties.class})
 @SpringBootApplication
 public class BankcardsApplication {
 
