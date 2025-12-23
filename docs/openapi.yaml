@@ -300,14 +300,18 @@ paths:
                 type: object
                 properties:
                   statuses:
-                    type: string
-                    enum:
-                    - ACTIVE
-                    - BLOCKED
-                    - EXPIRED
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                      - ACTIVE
+                      - BLOCKED
+                      - EXPIRED
               example:
                 statuses:
-                - "ACTIVE, BLOCKED, EXPIRED"
+                - ACTIVE
+                - BLOCKED
+                - EXPIRED
 components:
   schemas:
     AuthRequest:

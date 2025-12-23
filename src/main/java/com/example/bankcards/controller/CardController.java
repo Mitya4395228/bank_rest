@@ -109,11 +109,11 @@ public class CardController {
 
     @Operation(summary = "Get all statuses", description = "Returns all statuses")
     @ApiResponse(responseCode = "200", description = "OK", 
-        content = @Content(schema = @Schema(type = "object", properties = @StringToClassMapItem(key = "statuses", value = CardStatus.class)), 
+        content = @Content(schema = @Schema(type = "object", properties = @StringToClassMapItem(key = "statuses", value = CardStatus[].class)),
             examples = @ExampleObject("""
                 {
                     "statuses": [
-                        "ACTIVE, BLOCKED, EXPIRED"
+                        "ACTIVE", "BLOCKED", "EXPIRED"
                     ]
                 }
                 """)))
