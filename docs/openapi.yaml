@@ -16,6 +16,8 @@ paths:
     post:
       tags:
       - Authentication
+      summary: Login
+      description: Authentication to recieve a token
       operationId: login
       requestBody:
         content:
@@ -345,7 +347,7 @@ components:
       - userId
     CardReadDTO:
       type: object
-      description: Card read DTO
+      description: Data transfer object represent card
       properties:
         id:
           type: string
