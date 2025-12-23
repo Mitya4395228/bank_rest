@@ -19,6 +19,12 @@ public class UserService {
     @Autowired
     UserRepository repository;
 
+    /**
+     * Find user by id from database
+     * @param id {@code UUID}
+     * @return {@link UserEntity}
+     * @throws EntityNotFoundException if user not found
+     */
     public UserEntity getEntityById(UUID id) {
         return repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id=%s".formatted(id)));

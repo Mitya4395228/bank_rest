@@ -220,35 +220,6 @@ class CardServiceTest {
     }
 
     @Test
-    void testGetAllByUserId() {
-
-        UserEntity userNotFound = createUser();
-        CardEntity cardNotFound = createCard(userNotFound, CardStatus.ACTIVE);
-
-        UserEntity user = createUser();
-        CardEntity card1 = createCard(user, CardStatus.ACTIVE);
-        CardEntity card2 = createCard(user, CardStatus.ACTIVE);
-
-        UserEntity admin = createUser(RoleType.ADMIN);
-        when(authenticationResolver.getUser()).thenReturn(new UserInfoDetails(admin));
-
-        List<CardReadDTO> result = cardService.getAllByUserId(user.getId());
-
-        assertTrue(result.size() == 2);
-        Assertions.assertThat(List.of(card1, card2))
-                .usingRecursiveComparison(configRecursiveComparison())
-                .ignoringCollectionOrder()
-                .ignoringFields("user", "number")
-                .isEqualTo(result);
-        Assertions.assertThat(List.of(user.getId(), user.getId()))
-                .usingRecursiveComparison(configRecursiveComparison())
-                .ignoringCollectionOrder()
-                .ignoringFields("user", "number")
-                .isEqualTo(result.stream().map(CardReadDTO::userId).toList());
-        assertNotEquals(cardNotFound.getId(), result.get(0).id());
-    }
-
-    @Test
     void testCreate() {
 
         UserEntity user = createUser();

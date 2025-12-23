@@ -22,6 +22,14 @@ public class CardTasks {
     @Autowired
     CardRepository cardRepository;
 
+    /**
+     * <p>
+     * Background task to set expired cards.
+     * </p>
+     * <p>
+     * Runs according to a schedule at an unbusy time of day.
+     * </p>
+     */
     @Transactional(readOnly = true)
     @Scheduled(cron = "${update.expired-cards.job.cron}")
     public void jobSetExpired() {

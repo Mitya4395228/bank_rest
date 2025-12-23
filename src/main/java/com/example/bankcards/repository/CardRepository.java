@@ -1,7 +1,6 @@
 package com.example.bankcards.repository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -17,8 +16,6 @@ import com.example.bankcards.entity.enums.CardStatus;
 public interface CardRepository extends JpaRepository<CardEntity, UUID>, CardRepositoryCustom {
 
     boolean existsByNumber(String number);
-
-    List<CardEntity> findAllByUserId(UUID userId);
 
     @Query("select c.id from CardEntity c where c.expirationDate < :expirationDate and status != :status")
     Stream<UUID> findAllIdWithExpiredDate(LocalDate expirationDate, CardStatus status);

@@ -12,6 +12,11 @@ import jakarta.persistence.Convert;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Encrypts and decrypts sensitive string values stored in database using AES
+ * encryption.
+ */
+
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Convert
 public class StringEncryptor implements AttributeConverter<String, String> {

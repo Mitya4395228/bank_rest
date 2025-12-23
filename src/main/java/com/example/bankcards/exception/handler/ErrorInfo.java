@@ -7,6 +7,10 @@ import org.springframework.http.HttpStatusCode;
 
 import com.example.bankcards.util.ExceptionUtil;
 
+/**
+ * Used as DTO for exception handling {@link GlobalExceptionHandler}
+ */
+
 public record ErrorInfo(HttpStatusCode httpStatus, Class exceptionClass, String message, String printStackTrace) {
 
     public ErrorInfo(HttpStatusCode httpStatus, Exception ex) {
