@@ -48,8 +48,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/api/v1/cards/**").hasAnyRole("ADMIN", "USER"))
+                                .requestMatchers("/login", "/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui/**", "/swagger-ui.html")
+                                .permitAll()
+                                .requestMatchers("/api/v1/cards/**")
+                                .hasAnyRole("ADMIN", "USER"))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
