@@ -76,9 +76,9 @@ http://localhost:8080/swagger-ui/index.html
 
 - Хост: `localhost`
 - Порт: `5432`
-- Пользователь: `user_manager_service`
+- Пользователь: `bankcards_service`
 - Пароль: `123456`
-- База данных: `user_service_db`
+- База данных: `bankcards_service_db`
 
 ---
 
