@@ -12,8 +12,7 @@ spring:
   application:
     name: bankcards
   datasource:
-    # url: jdbc:postgresql://postgres:5432/bankcards_service_db
-    url: jdbc:postgresql://localhost:5433/bankcards_service_db
+    url: jdbc:postgresql://postgres:5432/bankcards_service_db
     driver-class-name: org.postgresql.Driver
     username: bankcards_service
     password: 123456

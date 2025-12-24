@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.example.bankcards.entity.UserEntity;
 import com.example.bankcards.exception.EntityNotFoundException;
+import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.RoleRepository;
 import com.example.bankcards.repository.UserRepository;
 
@@ -51,8 +52,12 @@ class UserServiceTest {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    CardRepository cardRepository;
+
     @BeforeEach
     void setUp() throws Exception {
+        cardRepository.deleteAll();
         userRepository.deleteAll();
     }
 

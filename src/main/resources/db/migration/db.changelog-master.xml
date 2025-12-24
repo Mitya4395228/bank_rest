@@ -9,6 +9,15 @@
      http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
      http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-         <includeAll path="db/migration/releases" />
+        <include file="db/migration/releases/V1__create_auth_schema.sql" />
+        <include file="db/migration/releases/V2__create_users_table.sql" />
+        <include file="db/migration/releases/V3__insert_test_user_into_users_table.sql" />
+        <include file="db/migration/releases/V4__create_roles_table.sql" />
+        <include file="db/migration/releases/V5__insert_roles_into_roles_table.sql" />
+        <include file="db/migration/releases/V6__create_users_roles_table.sql" />
+        <include file="db/migration/releases/V7__insert_into_users_roles_table.sql" />
+        <include file="db/migration/releases/V8__create_finance_schema.sql" />
+        <include file="db/migration/releases/V9__create_cards_table.sql" />
+        <include file="db/migration/releases/V10__insert_test_cards_into_cards_table.sql" />
 
 </databaseChangeLog>
