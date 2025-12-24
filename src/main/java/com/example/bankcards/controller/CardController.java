@@ -37,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -45,6 +46,7 @@ import lombok.experimental.FieldDefaults;
 
 @Tag(name = "Cards", description = "Operations with cards")
 @SecurityScheme(name = "Bearer Authentication", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
+@SecurityRequirement(name = "Bearer Authentication")
 @RestController
 @RequestMapping(value = "/api/v1/cards", produces = "application/json")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -53,7 +55,7 @@ public class CardController {
     @Autowired
     CardService service;
 
-    @Operation(summary = "Get card by id", description = "Returns card information by its identifier")
+    @Operation(summary = "Get card by id", description = "Returns card information by its identifier. Available for admin and user roles only.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(schema = @Schema(implementation = ErrorInfo.class))),
@@ -65,7 +67,7 @@ public class CardController {
         return service.getById(id);
     }
 
-    @Operation(summary = "Get all cards by filter", description = "Returns all cards information by filter and pageable")
+    @Operation(summary = "Get all cards by filter", description = "Returns all cards information by filter and pageable. Available for admin and user roles only.")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping()
     public PagedModel<CardReadDTO> getAllByFilter(@ParameterObject CardFilter filter,
@@ -107,7 +109,7 @@ public class CardController {
         return service.blockRequest(id);
     }
 
-    @Operation(summary = "Get all statuses", description = "Returns all statuses")
+    @Operation(summary = "Get all statuses", description = "Returns all statuses. Available for admin role only.")
     @ApiResponse(responseCode = "200", description = "OK", 
         content = @Content(schema = @Schema(type = "object", properties = @StringToClassMapItem(key = "statuses", value = CardStatus[].class)),
             examples = @ExampleObject("""

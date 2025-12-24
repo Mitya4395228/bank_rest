@@ -37,7 +37,8 @@ paths:
       tags:
       - Cards
       summary: Get all cards by filter
-      description: Returns all cards information by filter and pageable
+      description: Returns all cards information by filter and pageable. Available
+        for admin and user roles only.
       operationId: getAllByFilter
       parameters:
       - name: expirationDateFrom
@@ -135,6 +136,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PagedModelCardReadDTO"
+      security:
+      - Bearer Authentication: []
     post:
       tags:
       - Cards
@@ -154,6 +157,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CardReadDTO"
+      security:
+      - Bearer Authentication: []
   /api/v1/cards/transfer:
     post:
       tags:
@@ -180,6 +185,8 @@ paths:
                   minItems: 2
                 maxItems: 2
                 minItems: 2
+      security:
+      - Bearer Authentication: []
   /api/v1/cards/{id}/status:
     patch:
       tags:
@@ -207,6 +214,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CardReadDTO"
+      security:
+      - Bearer Authentication: []
   /api/v1/cards/{id}/block:
     patch:
       tags:
@@ -237,12 +246,15 @@ paths:
                 userId: 3fa85f64-5717-4562-b3fc-2c963f66afa6
                 createdAt: 2025-12-23T01:59:56.379Z
                 updatedAt: 2025-12-23T01:59:56.379Z
+      security:
+      - Bearer Authentication: []
   /api/v1/cards/{id}:
     get:
       tags:
       - Cards
       summary: Get card by id
-      description: Returns card information by its identifier
+      description: Returns card information by its identifier. Available for admin
+        and user roles only.
       operationId: getById
       parameters:
       - name: id
@@ -270,6 +282,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorInfo"
+      security:
+      - Bearer Authentication: []
     delete:
       tags:
       - Cards
@@ -286,12 +300,14 @@ paths:
       responses:
         "200":
           description: OK
+      security:
+      - Bearer Authentication: []
   /api/v1/cards/statuses:
     get:
       tags:
       - Cards
       summary: Get all statuses
-      description: Returns all statuses
+      description: Returns all statuses. Available for admin role only.
       operationId: getAllStatuses
       responses:
         "200":
@@ -314,6 +330,8 @@ paths:
                 - ACTIVE
                 - BLOCKED
                 - EXPIRED
+      security:
+      - Bearer Authentication: []
 components:
   schemas:
     AuthRequest:
